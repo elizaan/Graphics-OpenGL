@@ -1,0 +1,34 @@
+Ubuntu + VSCode:
+
+0. Open OPENGl_VISUAL_STUDIO.zip in VSCode
+
+1. Run this from terminal: sudo apt install freeglut3 freeglut3-dev libglew1.5-dev libglu1-mesa libglu1-mesa-dev libgl1-mesa-glx libgl1-mesa-dev glew-utils
+
+2. Replace windows & glut headers with:
+    #include <GL/glew.h>
+    #include <GL/glut.h>
+    #include <GL/gl.h>
+    #include <GL/glu.h>
+    #include <GL/glext.h>
+
+3. After "glutCreateWindow("My OpenGL Program");" paste this: 
+    GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		fprintf(stderr, "Error %s\n", glewGetErrorString(err));
+		exit(1);
+	}
+	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+
+	if (GLEW_ARB_vertex_program)
+		fprintf(stdout, "Status: ARB vertex programs available.\n");
+
+	if (glewGetExtension("GL_ARB_fragment_program"))
+		fprintf(stdout, "Status: ARB fragment programs available.\n");
+
+	if (glewIsSupported("GL_VERSION_1_4  GL_ARB_point_sprite"))
+		fprintf(stdout, "Status: ARB point sprites available.\n");
+
+4. Build Command: gcc -o main OpenGl/main.cpp -lglut -lGL -lGLU -lGLEW -lm -ldl
+
+5. Run Command: ./main
