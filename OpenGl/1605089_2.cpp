@@ -15,7 +15,8 @@ int drawaxes;
 double angle;
 double speed;
 double prevSpeed;
-
+int counter;
+int nBubbles;
 
 struct point
 {
@@ -252,7 +253,9 @@ void drawSS()
     drawCircle(40,60); //radious 40
 
     //glRotatef(angle,0,0,1);
-    for(int i =0;i<5;i++){  //five bubbles
+
+     
+    for(int i =0;i<nBubbles;i++){  //five bubbles
         glTranslatef(bbs[i].centre.x,bbs[i].centre.y,0);
         glColor3f(0,0,1);
         drawCircle(6,60); //radius 10
@@ -292,7 +295,7 @@ void specialKeyListener(int key, int x,int y){
 			break;
 		case GLUT_KEY_UP:		// up arrow key//making speed 1.5 times
 			//cameraHeight += 3.0;
-			speed = 1.5*speed;
+			speed = 1.1*speed;
 			break;
 
 	
@@ -330,9 +333,28 @@ void display(){
 
 	//clear the display
 	// resets display
+
+    counter = counter + 1;
+    if(counter ==10){
+        nBubbles = 1;
+    }
+    if(counter ==70){
+        nBubbles = 2;
+    }
+    if(counter ==120){
+        nBubbles = 3;
+    }
+    if(counter ==170){
+        nBubbles = 4;
+    }
+    if(counter ==220){
+        nBubbles = 5;
+    }
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0,0,0,0);	//color black
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+   
 
 	/********************
 	/ set-up camera here
@@ -385,9 +407,10 @@ void display(){
 
 
 void animate(){
+    
 	//angle+=0.05;
 	//codes for any changes in Models, Camera
-    for(int i =0;i<5;i++){
+    for(int i =0;i<nBubbles;i++){
 
         
         // bbs[i].centre.x = bbs[i].centre.x + 0.7*bbs[i].v.vx;
@@ -490,7 +513,7 @@ void animate(){
 
         // }
 
-        for(int j = 0;j<5;j++){
+        for(int j = 0;j<nBubbles;j++){
             if(i!=j){
                 if(bbs[i].inside == true && bbs[j].inside == true){
                     double dx = bbs[j].centre.x-bbs[i].centre.x;
@@ -574,13 +597,24 @@ void init(){
 	//codes for initialization
 	drawgrid=0;
 	drawaxes=1;
-    speed = 0.5;
-	//angle=0;
+    speed = 0.8;
+    counter = 0;
+	
 
-    for(int i =0;i<5;i++){
+    bbs[0].centre.x = -54;
+    bbs[0].centre.y = -54;
+    bbs[0].v.vx = (rand()*0% 1500*(0+1));
+    bbs[0].v.vy = (rand() % 500*(0+1));
+    double unit = sqrt(pow(bbs[0].v.vx,2) + pow(bbs[0].v.vy,2));
+    bbs[0].v.vx = bbs[0].v.vx/ unit;
+    bbs[0].v.vy = bbs[0].v.vy/ unit;
+    bbs[0].inside = false;
+    bbs[0].insideIt = false;
+
+    for(int i =1;i<5;i++){
         bbs[i].centre.x = -54;
         bbs[i].centre.y = -54;
-        bbs[i].v.vx = (rand()*i% 2000*(i+1));
+        bbs[i].v.vx = (rand()% 1500*(i+1));
         bbs[i].v.vy = (rand() % 500*(i+1));
         double unit = sqrt(pow(bbs[i].v.vx,2) + pow(bbs[i].v.vy,2));
         bbs[i].v.vx = bbs[i].v.vx/ unit;

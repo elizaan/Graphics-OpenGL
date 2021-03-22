@@ -18,6 +18,8 @@ double angle;
 double uppAngle;
 double cylinderAngle;
 double rotateAngle;
+bool intersect;
+double x3, y3,z3;
 
 
 struct point
@@ -114,12 +116,13 @@ void drawSquare(double a)
 {
     //glColor3f(1.0,0.0,0.0);
 	glBegin(GL_QUADS);{
-		glVertex3f( a, a,2);
-		glVertex3f( a,-a,2);
-		glVertex3f(-a,-a,2);
-		glVertex3f(-a, a,2);
+		glVertex3f( a, 0, a);
+		glVertex3f( a, 0, -a);
+		glVertex3f(-a,0, -a);
+		glVertex3f(-a , 0, a);
 	}glEnd();
 }
+
 
 
 void drawCircle(double radius,int segments)
@@ -424,7 +427,20 @@ void drawSS()
 	glTranslatef(0,0,40);
 
 	glRotatef(-uppAngle,1,0,0);
+	glRotatef(-90,1,0,0);
 	glRotatef(-angle,0,0,1);
+
+	glTranslatef(0,400,0);
+	glColor3f(0,5,30);
+	drawSquare(200);
+	glTranslatef(0,-400,0);
+
+	if(intersect == true){
+		glTranslatef(x3,y3,z3);
+		glColor3f(1,0,0);
+		drawCircle(2,100);
+
+	}
 
     // glRotatef(angle,0,0,1);
     // glTranslatef(110,0,0);
@@ -606,6 +622,41 @@ void specialKeyListener(int key, int x,int y){
 void mouseListener(int button, int state, int x, int y){	//x, y is the x-y of the screen (2D)
 	switch(button){
 		case GLUT_LEFT_BUTTON:
+			struct point A;
+			struct point B;
+			A.x = cos(90-uppAngle)*40;
+			A.y = cos(angle)*40;
+			A.z = sqrt((40*40) - (A.x*A.x) - (A.y*A.y));
+
+			B.x = cos(90-(uppAngle+cylinderAngle))*220;
+			B.y = cos(angle)*220;
+			B.z = sqrt((220*220) - (B.x*B.x) - (B.y*B.y));
+
+			double x2,y2,z2;
+			x2 = B.x - A.x;
+			y2 = B.y - A.y;
+			z2 = B.z - A.z;
+
+			double t;
+
+			t = (400 - A.y)/y2; // not sure
+			
+			x3 = A.x + t*x2;
+			y3 = A.y + t*y2;
+			z3 = A.z + t*z2;
+
+			printf("%f %f %f",&x3,&y3,&z3);
+
+			if(x3>=-200.0 && x3<=200.0){
+				printf("\n%d",intersect);
+				if(z3>=-200.0 && z3<=200.0){
+					intersect = true;
+				}
+			}
+
+			printf("\n%d",intersect);
+
+			
 			
 			break;
 
@@ -702,6 +753,7 @@ void init(){
 	uppAngle = 0;
 	cylinderAngle = 0;
 	rotateAngle = 0;
+	intersect = false;
 
 	pos.x = 100;
 	pos.y = 100;
